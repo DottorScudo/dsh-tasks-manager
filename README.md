@@ -261,11 +261,14 @@ plugin in the profile and restart `dsh web` to load them.
 
 ## Upgrading
 
-This release requires **DSH 0.2.0-rc.2**. `@deepseek-ai/dsh-system-prompt` and
-`@deepseek-ai/dsh-tools` are pinned to that exact line on purpose: DSH compares
-those declared peers with the version of the **running** runtime and refuses the
-install — or denies the mounted bundle at boot — when they do not cover it, so a
-DSH upgrade has to move these pins with it (`npm run check` enforces the pin).
+This release supports **DSH 0.2.x** (tested against 0.2.1-rc.2).
+`@deepseek-ai/dsh-system-prompt` and `@deepseek-ai/dsh-tools` declare the
+`^0.2.0-rc.2` range: DSH compares those declared peers with the version of the
+**running** runtime and refuses the install — or denies the mounted bundle at
+boot — when they do not cover it. An exact pin is therefore a refusal on every
+DSH release: 0.7.0 pinned 0.2.0-rc.2 and was refused on 0.2.1-rc.2 even though
+the code was unchanged. `npm run check` enforces that each peer is a range
+covering the installed line; the 0.3 line is not claimed until it is tested.
 The 0.1.7-rc.2 line is where the settings namespace stopped being a name the
 plugin registers: older builds registered a settings
 namespace named `tasks`; the harness now derives it from the entry id, so it is

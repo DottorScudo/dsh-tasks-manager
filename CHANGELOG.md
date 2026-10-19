@@ -5,6 +5,36 @@ updater in Settings → Tasks offers the newest tag it can read.
 
 ## [Unreleased]
 
+## [0.7.1]
+
+The plugin is accepted by DSH 0.2.1-rc.2 again: the exact peer pin that refused it is gone.
+
+- **The DSH peers are compatibility ranges, not exact pins.**
+  `@deepseek-ai/dsh-system-prompt` and `@deepseek-ai/dsh-tools` now declare
+  `^0.2.0-rc.2` instead of `0.2.0-rc.2`. DSH
+  (`evaluatePluginCompatibility` in `@deepseek-ai/dsh-app-boot`) compares every
+  `@deepseek-ai/dsh*` peer with the RUNNING runtime and refuses the install — or
+  denies the mounted bundle at boot — when the range does not cover it. 0.7.0
+  pinned the exact 0.2.0-rc.2 line, so DSH 0.2.1-rc.2 refused it with
+  "requires @deepseek-ai/dsh-system-prompt 0.2.0-rc.2, @deepseek-ai/dsh-tools
+  0.2.0-rc.2" although the plugin's code needed no change. The range covers the
+  whole 0.2 line and stops before 0.3, which is not tested.
+- **`npm run check` now enforces that policy instead of the pin.**
+  `scripts/dsh-line.mjs` is the pure rule: every DSH peer must be a semver range
+  (an exact version is a failure, so this bug cannot come back silently), the
+  range must satisfy the line installed in `node_modules`, and the installed
+  `@deepseek-ai/dsh*` packages must agree with one another. `npm run check`
+  reports the installed line as `0.2.1-rc.2 (2 peer range(s))`.
+- **The development line moved to 0.2.1-rc.2.** The `devDependencies` that
+  `npm test` boots (`dsh-tools`, `dsh-system-prompt`, `dsh-commands`,
+  `dsh-settings`, `cordis`) are now on that line, so the suite proves the plugin
+  really runs on the release that refused 0.7.0. The runtime
+  `@deepseek-ai/schemastery` moves from `~3.18.4` to `~3.18.5` because
+  `dsh-settings` 0.2.1-rc.2 requires it (no peer warning is left), and `semver`
+  is a devDependency of the check script.
+- `test/dsh-line.test.js` pins the rule and this package's own range: it covers
+  0.2.1-rc.2 and does not claim 0.3.
+
 ## [0.7.0]
 
 A task filed by the Team Task Intake preset is now implemented by a TEAM (#36).
